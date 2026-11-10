@@ -66,6 +66,9 @@ async def web_search(
         f"Farmer question: {query}"
     )
 
+    if not settings.search_api_keys():
+        return "Live web search is not enabled in this session; answer using general farming knowledge."
+
     try:
         api_key = pick_search_api_key()
         result = await asyncio.to_thread(_execute_grounded_search, api_key, prompt)
@@ -75,3 +78,4 @@ async def web_search(
     except Exception as exc:
         logger.error("Grounded search failed: %s", exc)
         return "Sorry, I ran into a temporary issue checking live information. Please try again shortly."
+
