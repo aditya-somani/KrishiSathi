@@ -49,9 +49,9 @@ def _resolve_session_languages(
             to_gnani_tts_language(preferred),
         )
     return (
-        "english",
-        settings.gnani_stt_language,
-        settings.gnani_tts_language,
+        "hindi",
+        settings.gnani_stt_language or "hi-IN",
+        settings.gnani_tts_language or "hi-IN",
     )
 
 
@@ -102,7 +102,8 @@ async def entrypoint(ctx: JobContext) -> None:
     await ctx.connect(auto_subscribe=AutoSubscribe.AUDIO_ONLY)
 
     participant = await ctx.wait_for_participant()
-    phone = participant.identity
+    raw_identity = participant.identity or ""
+    phone = raw_identity.removeprefix("sip_") if raw_identity else "anonymous"
 
     farmer_profile = repository.get_farmer(phone)
     session_language, stt_language, tts_language = _resolve_session_languages(farmer_profile)
@@ -129,7 +130,10 @@ async def entrypoint(ctx: JobContext) -> None:
     )
 
     await session.generate_reply(
-        instructions="Greet the caller warmly according to your Greeting Behavior instructions."
+        instructions=(
+            "Greet the caller warmly in Hindi with feminine pronouns following your Greeting Behavior: "
+            "'Namaste! Main KrishiSathi hoon, aapki kheti ki digital sathi. Main aapki kya madad kar sakti hoon?'"
+        )
     )
 
     async def _enforce_call_limit() -> None:

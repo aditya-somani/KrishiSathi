@@ -51,12 +51,23 @@ async def detect_language(
     context: RunContext,
     detected_language: str,
 ) -> str:
-    """Set the active conversation language once detected or switched by the farmer.
+    """Set the active conversation language ONLY when the farmer explicitly speaks another regional language or asks to switch.
+    Do NOT call this for mixed English loan words like 'rate', 'price', 'mandi', 'spray', 'weather'.
 
     Args:
-        detected_language: Language spoken by the farmer (e.g., "hindi", "marathi", "tamil", "english").
+        detected_language: Language spoken by the farmer (e.g., "hindi", "marathi", "tamil", "kannada").
     """
-    canonical = sync_session_language(context.session, detected_language, persist=True)
+    requested = normalize_language(detected_language)
+    current = "hindi"
+    if hasattr(context, "session") and hasattr(context.session, "userdata"):
+        current = context.session.userdata.get("language", "hindi")
+
+    # Guard: prevent accidental flip to English when farmer speaks Hindi with English loanwords
+    if current == "hindi" and requested == "english":
+        logger.info("Retaining Hindi mode despite English loanword detection")
+        return "Continuing conversation in Hindi."
+
+    canonical = sync_session_language(context.session, requested, persist=True)
     logger.info("Detected language set to %s", canonical)
-    return f"Language switched to {canonical}. Continue responding in {canonical}."
+    return f"Language set to {canonical}. Continue responding in {canonical}."
 

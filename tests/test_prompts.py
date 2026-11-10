@@ -11,6 +11,8 @@ def test_base_prompt_contains_no_cartesia_emotion_tags() -> None:
 def test_build_system_instructions_for_new_caller() -> None:
     instructions = build_system_instructions(None)
     assert "New caller" in instructions
+    assert "Hindi" in instructions
+    assert "feminine" in instructions.lower()
     assert "Returning Farmer Context" not in instructions
 
 
