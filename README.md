@@ -21,9 +21,9 @@ KrishiSathi enables farmers to call in over standard voice/telephony channels an
 | Real-time Voice Transport | LiveKit Agents |
 | Speech-to-Text (STT) | Gnani.ai Vachana Prisma (`gnani.STT`, WebSocket streaming) |
 | Text-to-Speech (TTS) | Gnani.ai Vachana Timbre (`gnani.TTS`, `timbre-v2.5` over WebSocket) |
-| Reasoning LLM | Google Gemini (`gemini-2.5-flash`) |
-| Live Agricultural Search | Gemini with Google Search Grounding |
-| Post-Call Summarization | Groq (`llama-3.1-8b-instant`) with Gemini fallback |
+| Reasoning LLM | Groq (`llama-3.3-70b-versatile`) with Gemini fallback |
+| Live Agricultural Search | Optional Gemini with Google Search Grounding |
+| Post-Call Summarization | Groq (`llama-3.1-8b-instant`) |
 | VAD & Turn Detection | Silero VAD + LiveKit Multilingual Turn Detector |
 | Farmer Memory Store | SQLite (`data/krishisathi.db`) |
 
@@ -58,7 +58,7 @@ tests/                    # Unit tests for config, languages, storage, tools & h
 ### Prerequisites
 - Python 3.11+
 - [uv](https://docs.astral.sh/uv/)
-- API credentials: `GNANI_API_KEY`, `GOOGLE_API_KEY`, and LiveKit credentials (`LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`)
+- API credentials: `GNANI_API_KEY`, `GROQ_API_KEY`, and LiveKit credentials (`LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`)
 
 ### Setup
 
@@ -70,7 +70,7 @@ tests/                    # Unit tests for config, languages, storage, tools & h
 2. Configure environment variables:
    ```bash
    cp .env.example .env
-   # Fill in GNANI_API_KEY, GOOGLE_API_KEY, and LiveKit keys
+   # Fill in GNANI_API_KEY, GROQ_API_KEY, and LiveKit keys
    ```
 
 3. Download VAD & turn-detector assets and run in development mode:
@@ -98,3 +98,4 @@ docker run --env-file .env krishisathi
 ## License
 
 MIT
+

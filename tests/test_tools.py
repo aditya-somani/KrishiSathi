@@ -61,18 +61,18 @@ async def test_register_and_update_farmer_tools(temp_repo: FarmerRepository) -> 
 
 def test_build_agent_session_wires_gnani_stt_and_tts(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(agent_module.settings, "gnani_api_key", "gnani-key")
-    monkeypatch.setattr(agent_module.settings, "google_api_key", "google-key")
+    monkeypatch.setattr(agent_module.settings, "groq_api_key", "groq-key")
 
     mock_stt = MagicMock()
     mock_tts = MagicMock()
-    mock_llm = MagicMock()
+    mock_groq_llm = MagicMock()
     mock_vad = MagicMock()
     mock_turn = MagicMock()
     mock_session_cls = MagicMock()
 
     monkeypatch.setattr(agent_module.gnani, "STT", mock_stt)
     monkeypatch.setattr(agent_module.gnani, "TTS", mock_tts)
-    monkeypatch.setattr(agent_module.google, "LLM", mock_llm)
+    monkeypatch.setattr(agent_module.lk_openai, "LLM", mock_groq_llm)
     monkeypatch.setattr(agent_module.silero.VAD, "load", MagicMock(return_value=mock_vad))
     monkeypatch.setattr(agent_module, "MultilingualModel", MagicMock(return_value=mock_turn))
     monkeypatch.setattr(agent_module, "AgentSession", mock_session_cls)
@@ -83,7 +83,11 @@ def test_build_agent_session_wires_gnani_stt_and_tts(monkeypatch: pytest.MonkeyP
     assert mock_stt.call_args.kwargs["language"] == "hi-IN"
     assert mock_stt.call_args.kwargs["use_streaming"] is True
 
+    mock_groq_llm.assert_called_once()
+    assert mock_groq_llm.call_args.kwargs["base_url"] == "https://api.groq.com/openai/v1"
+
     mock_tts.assert_called_once()
     assert mock_tts.call_args.kwargs["language"] == "hi-IN"
     assert mock_tts.call_args.kwargs["model"] == "timbre-v2.5"
     assert mock_tts.call_args.kwargs["synthesize_method"] == "websocket"
+
