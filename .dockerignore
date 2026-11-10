@@ -1,0 +1,36 @@
+# Python bytecode and artifacts
+**/__pycache__/
+**/*.py[cod]
+**/*.pyo
+**/*.pyd
+**/*.egg-info/
+**/dist/
+**/build/
+
+# Virtual environments
+**/.venv/
+**/venv/
+
+# Caches and test output
+**/.cache/
+**/.pytest_cache/
+**/.ruff_cache/
+**/coverage/
+
+# Logs and environment
+**/*.log
+**/.env
+**/.env.*
+
+# VCS & editor
+.git
+.gitignore
+.idea/
+.vscode/
+.DS_Store
+
+# Non-runtime files
+README.md
+tests/
+data/
+

@@ -1,0 +1,35 @@
+# Python artifacts
+__pycache__/
+*.py[oc]
+*$py.class
+build/
+dist/
+wheels/
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+
+# Test & linter caches
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Environment & local secrets
+.env
+.env.*
+!.env.example
+
+# Local SQLite database & runtime data
+data/
+*.db
+*.sqlite3
+
+# Editor & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
