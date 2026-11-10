@@ -34,6 +34,7 @@ RUN chown -R appuser:appuser /app
 USER appuser
 
 # Pre-fetch Silero VAD and LiveKit turn-detector weights at image build time
-RUN uv run src/krishisathi/main.py download-files
+RUN uv run --no-sync src/krishisathi/main.py download-files
 
-CMD ["uv", "run", "src/krishisathi/main.py", "start"]
+CMD ["uv", "run", "--no-sync", "src/krishisathi/main.py", "start"]
+
