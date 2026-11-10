@@ -21,9 +21,9 @@ KrishiSathi enables farmers to call in over standard voice/telephony channels an
 | Real-time Voice Transport | LiveKit Agents |
 | Speech-to-Text (STT) | Gnani.ai Vachana Prisma (`gnani.STT`, WebSocket streaming) |
 | Text-to-Speech (TTS) | Gnani.ai Vachana Timbre (`gnani.TTS`, `timbre-v2.5` over WebSocket) |
-| Reasoning LLM | Groq (`llama-3.3-70b-versatile`) with Gemini fallback |
+| Reasoning LLM | Groq (`openai/gpt-oss-20b`) with Gemini fallback |
 | Live Agricultural Search | Optional Gemini with Google Search Grounding |
-| Post-Call Summarization | Groq (`llama-3.1-8b-instant`) |
+| Post-Call Summarization | Groq (`openai/gpt-oss-20b`) |
 | VAD & Turn Detection | Silero VAD + LiveKit Multilingual Turn Detector |
 | Farmer Memory Store | SQLite (`data/krishisathi.db`) |
 

@@ -60,7 +60,7 @@ class Settings:
 
     # Primary LLM (Groq) & Optional Gemini Search Grounding
     groq_api_key: str | None = os.getenv("GROQ_API_KEY") or os.getenv("GROQ_API_KEY_2")
-    groq_llm_model: str = os.getenv("GROQ_LLM_MODEL", "llama-3.3-70b-versatile")
+    groq_llm_model: str = os.getenv("GROQ_LLM_MODEL", "openai/gpt-oss-20b")
     google_api_key: str | None = os.getenv("GOOGLE_API_KEY")
     google_api_key_2: str | None = os.getenv("GOOGLE_API_KEY_2")
     web_api_key: str | None = os.getenv("WEB_API_KEY")
@@ -88,7 +88,7 @@ class Settings:
             gnani_tts_method=os.getenv("GNANI_TTS_METHOD", "websocket"),
             gnani_tts_sample_rate=int(os.getenv("GNANI_TTS_SAMPLE_RATE", "16000")),
             groq_api_key=os.getenv("GROQ_API_KEY") or os.getenv("GROQ_API_KEY_2"),
-            groq_llm_model=os.getenv("GROQ_LLM_MODEL", "llama-3.3-70b-versatile"),
+            groq_llm_model=os.getenv("GROQ_LLM_MODEL", "openai/gpt-oss-20b"),
             google_api_key=os.getenv("GOOGLE_API_KEY"),
             google_api_key_2=os.getenv("GOOGLE_API_KEY_2"),
             web_api_key=os.getenv("WEB_API_KEY"),

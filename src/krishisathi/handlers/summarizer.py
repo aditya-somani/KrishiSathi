@@ -19,7 +19,7 @@ def _build_summarizer_llm():
     """Choose the lightest configured LLM client for post-call summarization."""
     if settings.groq_api_key:
         return lk_openai.LLM(
-            model="llama-3.1-8b-instant",
+            model=settings.groq_llm_model,
             api_key=settings.groq_api_key,
             base_url="https://api.groq.com/openai/v1",
             temperature=0.2,
