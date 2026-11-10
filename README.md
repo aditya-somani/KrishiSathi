@@ -1,101 +1,74 @@
-# KrishiSathi
+# KrishiSathi (कृषिसाथी)
 
-**Multilingual AI Voice Companion for Indian Farmers — Powered by Gnani.ai Vachana & LiveKit Agents**
-
-KrishiSathi enables farmers to call in over standard voice/telephony channels and receive personalized guidance on crops, mandi prices, weather, pest control, and government schemes in their own regional language—with zero smartphone or app required.
+**Bridging the Digital Divide: Delivering Internet Intelligence to Farmers Over Ordinary Phone Calls**
 
 ---
 
-## Why Gnani.ai + LiveKit?
+### The Mission
 
-- **Gnani Prisma STT (`livekit.plugins.gnani.STT`)**: Real-time WebSocket streaming speech recognition tuned for Indian accents, regional dialects, and bilingual code-switching (`en-IN,hi-IN`, `hi-IN`, `mr-IN`, `kn-IN`, `ta-IN`, `te-IN`, `ml-IN`, `bn-IN`, `gu-IN`, `pa-IN`).
-- **Gnani Timbre TTS (`livekit.plugins.gnani.TTS`)**: Low-latency WebSocket synthesis (`timbre-v2.5`) with dynamic mid-call language switching across 10 Indian languages.
-- **LiveKit Agents**: Sub-second real-time voice orchestration with Silero VAD, multilingual turn detection, preemptive generation, and room-level telephony hangup.
+Over 140 million Indian farmers power the nation's food supply, yet a vast **digital divide** cuts them off from the benefits of modern AI and the live internet. Most existing agricultural solutions demand smartphones, high-speed mobile data, app downloads, and technical literacy—demands that exclude the very farmers who need timely help the most.
 
----
+**KrishiSathi dismantles every barrier by turning any regular phone call into a direct conversational gateway to the internet:**
 
-## Architecture
-
-| Component | Technology |
-| --- | --- |
-| Real-time Voice Transport | LiveKit Agents |
-| Speech-to-Text (STT) | Gnani.ai Vachana Prisma (`gnani.STT`, WebSocket streaming) |
-| Text-to-Speech (TTS) | Gnani.ai Vachana Timbre (`gnani.TTS`, `timbre-v2.5` over WebSocket) |
-| Reasoning LLM | Groq (`openai/gpt-oss-20b`) with Gemini fallback |
-| Live Agricultural Search | Optional Gemini with Google Search Grounding |
-| Post-Call Summarization | Groq (`openai/gpt-oss-20b`) |
-| VAD & Turn Detection | Silero VAD + LiveKit Multilingual Turn Detector |
-| Farmer Memory Store | SQLite (`data/krishisathi.db`) |
+- **No Smartphone or Data Plan Needed:** Works on any basic keypad/feature phone over standard telephone lines (PSTN/SIP). Zero hardware cost for the farmer.
+- **Zero Technical Friction:** No apps to install, no passwords, no screens. The farmer simply dials a number and speaks.
+- **Breaking the Language Barrier:** Powered by **Gnani.ai's Vachana Speech AI**, KrishiSathi speaks and understands Indian languages natively. It greets in Hindi with a warm, respectful feminine persona (*"Main KrishiSathi hoon, aapki kheti ki digital sathi"*) and understands everyday Hinglish farming loanwords (*mandi, rate, urea, spray, weather*) without breaking conversation flow.
+- **Real-Time Internet Grounding:** Connects callers to live agricultural facts—today's mandi prices, crop MSP announcements, localized rain forecasts, and government schemes (PM-KISAN, PMFBY)—retrieved live and synthesized into actionable, spoken advice.
+- **Persistent Caller Memory:** Automatically recognizes returning callers by their phone number, remembering their past concerns, location, and crops for personalized continuity.
 
 ---
 
-## Project Structure
+### How It Works
 
-```text
-src/krishisathi/
-├── agent.py              # LiveKit entrypoint, Gnani STT/TTS pipeline & call watchdog
-├── config.py             # Typed environment configuration & startup validation
-├── languages.py          # Indian language registry & Gnani BCP-47 locale mapping
-├── main.py               # LiveKit worker CLI & prewarm checks
-├── prompts.py            # KrishiSathi persona & returning-farmer prompt builder
-├── storage.py            # SQLite repository for farmer profiles & 5-call rolling history
-├── handlers/
-│   ├── summarizer.py     # Async post-call summarization
-│   └── transcript.py     # Conversation item tracker
-├── tools/
-│   ├── farmer.py         # Farmer registration & profile update tools
-│   ├── language.py       # Dynamic language detection synced with Gnani TTS
-│   └── search.py         # Grounded agricultural search via Google Search
-└── utils/
-    └── telephony.py      # Room teardown utility for session timeout hangup
-tests/                    # Unit tests for config, languages, storage, tools & handlers
+```
+  [ Farmer on Basic Phone ]
+             │ (Regular Voice Call)
+             ▼
+    [ LiveKit SIP Telephony ]
+             │
+             ├──► [ Gnani.ai Prisma STT ] ────► Real-time Indian language speech-to-text
+             │
+             ├──► [ Groq Reasoning LLM ]  ────► Low-latency conversational intelligence
+             │            │
+             │            └──► [ Live Web Search ] ──► Real-time mandi rates & weather
+             │
+             ├──► [ Gnani.ai Timbre TTS ] ────► Natural, warm Indic voice reply
+             │
+             └──► [ SQLite Caller Memory ] ───► Auto-profiles farmer & call history
 ```
 
 ---
 
-## Quick Start
+### Architecture & Technology
 
-### Prerequisites
-- Python 3.11+
-- [uv](https://docs.astral.sh/uv/)
-- API credentials: `GNANI_API_KEY`, `GROQ_API_KEY`, and LiveKit credentials (`LIVEKIT_URL`, `LIVEKIT_API_KEY`, `LIVEKIT_API_SECRET`)
-
-### Setup
-
-1. Install dependencies:
-   ```bash
-   uv sync
-   ```
-
-2. Configure environment variables:
-   ```bash
-   cp .env.example .env
-   # Fill in GNANI_API_KEY, GROQ_API_KEY, and LiveKit keys
-   ```
-
-3. Download VAD & turn-detector assets and run in development mode:
-   ```bash
-   uv run python -m krishisathi.main download-files
-   uv run python -m krishisathi.main dev
-   ```
-
-4. Run unit tests:
-   ```bash
-   uv run pytest -v
-   ```
+| Layer | Technology | Role |
+| --- | --- | --- |
+| **Voice Transport** | **LiveKit Agents** | Sub-second audio orchestration, SIP telephony dispatch & room lifecycle |
+| **Speech-to-Text** | **Gnani.ai Prisma STT** (`livekit-plugins-gnani`) | Telephony-grade streaming recognition tuned for Indian accents & code-mixing |
+| **Text-to-Speech** | **Gnani.ai Timbre TTS** (`livekit-plugins-gnani`) | Expressive, low-latency Indic voice synthesis (`timbre-v3.0` / `Shivani`) |
+| **Reasoning LLM** | **Groq** (`openai/gpt-oss-20b`) | Ultra-fast token generation adhering to strict feminine Indic grammar |
+| **Live Grounding** | **Google Search Grounding (`v1beta`)** | Live mandi rates, MSP updates, and instant weather lookups |
+| **Memory Store** | **SQLite** (`data/krishisathi.db`) | Per-caller profile persistence & rolling conversation history |
 
 ---
 
-## Docker Deployment
+### Quick Start
 
 ```bash
-docker build -t krishisathi .
-docker run --env-file .env krishisathi
+# 1. Install dependencies
+uv sync
+
+# 2. Configure environment (copy and fill in .env)
+cp .env.example .env
+
+# 3. Run worker locally (or deploy to LiveKit Cloud)
+uv run python -m krishisathi.main dev
+# Deploy to LiveKit Cloud:
+# lk agent deploy --secrets-file .env --ignore-empty-secrets --yes
 ```
 
 ---
 
-## License
+### License
 
-MIT
-
+MIT — Built for farmers by Aditya Somani.
