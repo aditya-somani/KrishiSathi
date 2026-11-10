@@ -4,10 +4,37 @@ from __future__ import annotations
 
 import os
 from dataclasses import dataclass
+from urllib.parse import urlparse
 
 from dotenv import load_dotenv
 
 load_dotenv()
+
+
+def _parse_gnani_api_key() -> str | None:
+    """Resolve a Gnani API key from GNANI_API_KEY or comma-separated GNANI_API_KEYS."""
+    direct = os.getenv("GNANI_API_KEY")
+    if direct and direct.strip():
+        return direct.strip()
+    multi = os.getenv("GNANI_API_KEYS", "")
+    for candidate in multi.split(","):
+        if candidate.strip():
+            return candidate.strip()
+    return None
+
+
+def _parse_gnani_base_url() -> str:
+    """Extract scheme://host base URL for the LiveKit Gnani plugin."""
+    explicit = os.getenv("GNANI_BASE_URL")
+    if explicit and explicit.strip():
+        return explicit.strip().rstrip("/")
+    raw_url = os.getenv("GNANI_TTS_URL") or os.getenv("GNANI_STT_URL")
+    if raw_url:
+        parsed = urlparse(raw_url.strip())
+        if parsed.netloc:
+            scheme = "https" if parsed.scheme in ("https", "wss") else "http"
+            return f"{scheme}://{parsed.netloc}"
+    return "https://api.vachana.ai"
 
 
 @dataclass(frozen=True)
@@ -20,7 +47,8 @@ class Settings:
     livekit_api_secret: str | None = os.getenv("LIVEKIT_API_SECRET")
 
     # Gnani.ai Vachana Speech AI (STT + TTS)
-    gnani_api_key: str | None = os.getenv("GNANI_API_KEY")
+    gnani_api_key: str | None = _parse_gnani_api_key()
+    gnani_base_url: str = _parse_gnani_base_url()
     gnani_stt_language: str = os.getenv("GNANI_STT_LANGUAGE", "en-IN,hi-IN")
     gnani_stt_sample_rate: int = int(os.getenv("GNANI_STT_SAMPLE_RATE", "16000"))
     gnani_stt_format: str = os.getenv("GNANI_STT_FORMAT", "transcribe")
@@ -49,7 +77,8 @@ class Settings:
             livekit_url=os.getenv("LIVEKIT_URL"),
             livekit_api_key=os.getenv("LIVEKIT_API_KEY"),
             livekit_api_secret=os.getenv("LIVEKIT_API_SECRET"),
-            gnani_api_key=os.getenv("GNANI_API_KEY"),
+            gnani_api_key=_parse_gnani_api_key(),
+            gnani_base_url=_parse_gnani_base_url(),
             gnani_stt_language=os.getenv("GNANI_STT_LANGUAGE", "en-IN,hi-IN"),
             gnani_stt_sample_rate=int(os.getenv("GNANI_STT_SAMPLE_RATE", "16000")),
             gnani_stt_format=os.getenv("GNANI_STT_FORMAT", "transcribe"),

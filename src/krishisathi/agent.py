@@ -75,6 +75,7 @@ def build_agent_session(*, stt_language: str, tts_language: str) -> AgentSession
         stt=gnani.STT(
             language=stt_language,
             api_key=settings.gnani_api_key,
+            base_url=settings.gnani_base_url,
             sample_rate=settings.gnani_stt_sample_rate,
             format=settings.gnani_stt_format,
             use_streaming=True,
@@ -86,6 +87,7 @@ def build_agent_session(*, stt_language: str, tts_language: str) -> AgentSession
             language=tts_language,
             sample_rate=settings.gnani_tts_sample_rate,
             api_key=settings.gnani_api_key,
+            base_url=settings.gnani_base_url,
             synthesize_method=settings.gnani_tts_method,
         ),
         vad=silero.VAD.load(),
