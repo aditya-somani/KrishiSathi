@@ -8,6 +8,7 @@ from typing import Any
 
 from livekit.agents import Agent, AgentSession, AutoSubscribe, JobContext
 from livekit.plugins import gnani, google, silero
+from livekit.plugins import openai as lk_openai
 from livekit.plugins.turn_detector.multilingual import MultilingualModel
 
 from krishisathi.config import settings
@@ -54,8 +55,22 @@ def _resolve_session_languages(
     )
 
 
+def _build_primary_llm():
+    """Use Groq as primary low-latency LLM, falling back to Gemini if configured."""
+    if settings.groq_api_key:
+        return lk_openai.LLM(
+            model=settings.groq_llm_model,
+            api_key=settings.groq_api_key,
+            base_url="https://api.groq.com/openai/v1",
+        )
+    return google.LLM(
+        model=settings.gemini_llm_model,
+        api_key=settings.google_api_key,
+    )
+
+
 def build_agent_session(*, stt_language: str, tts_language: str) -> AgentSession:
-    """Construct an AgentSession wired with Gnani Vachana STT/TTS and Gemini LLM."""
+    """Construct an AgentSession wired with Gnani Vachana STT/TTS and Groq LLM."""
     return AgentSession(
         stt=gnani.STT(
             language=stt_language,
@@ -64,10 +79,7 @@ def build_agent_session(*, stt_language: str, tts_language: str) -> AgentSession
             format=settings.gnani_stt_format,
             use_streaming=True,
         ),
-        llm=google.LLM(
-            model=settings.gemini_llm_model,
-            api_key=settings.google_api_key,
-        ),
+        llm=_build_primary_llm(),
         tts=gnani.TTS(
             voice=settings.gnani_tts_voice,
             model=settings.gnani_tts_model,
@@ -138,3 +150,4 @@ async def entrypoint(ctx: JobContext) -> None:
         logger.info("Session cleaned up for %s", phone)
 
     ctx.add_shutdown_callback(_on_shutdown)
+
