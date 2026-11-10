@@ -30,14 +30,13 @@ class Settings:
     gnani_tts_method: str = os.getenv("GNANI_TTS_METHOD", "websocket")
     gnani_tts_sample_rate: int = int(os.getenv("GNANI_TTS_SAMPLE_RATE", "16000"))
 
-    # LLM & Search Grounding
+    # Primary LLM (Groq) & Optional Gemini Search Grounding
+    groq_api_key: str | None = os.getenv("GROQ_API_KEY") or os.getenv("GROQ_API_KEY_2")
+    groq_llm_model: str = os.getenv("GROQ_LLM_MODEL", "llama-3.3-70b-versatile")
     google_api_key: str | None = os.getenv("GOOGLE_API_KEY")
     google_api_key_2: str | None = os.getenv("GOOGLE_API_KEY_2")
     web_api_key: str | None = os.getenv("WEB_API_KEY")
     gemini_llm_model: str = os.getenv("GEMINI_LLM_MODEL", "gemini-2.5-flash")
-
-    # Optional Groq fast summarizer
-    groq_api_key: str | None = os.getenv("GROQ_API_KEY") or os.getenv("GROQ_API_KEY_2")
 
     # Persistence & Session Guardrails
     db_path: str = os.getenv("KRISHISATHI_DB_PATH", "data/krishisathi.db")
@@ -59,11 +58,12 @@ class Settings:
             gnani_tts_language=os.getenv("GNANI_TTS_LANGUAGE", "auto"),
             gnani_tts_method=os.getenv("GNANI_TTS_METHOD", "websocket"),
             gnani_tts_sample_rate=int(os.getenv("GNANI_TTS_SAMPLE_RATE", "16000")),
+            groq_api_key=os.getenv("GROQ_API_KEY") or os.getenv("GROQ_API_KEY_2"),
+            groq_llm_model=os.getenv("GROQ_LLM_MODEL", "llama-3.3-70b-versatile"),
             google_api_key=os.getenv("GOOGLE_API_KEY"),
             google_api_key_2=os.getenv("GOOGLE_API_KEY_2"),
             web_api_key=os.getenv("WEB_API_KEY"),
             gemini_llm_model=os.getenv("GEMINI_LLM_MODEL", "gemini-2.5-flash"),
-            groq_api_key=os.getenv("GROQ_API_KEY") or os.getenv("GROQ_API_KEY_2"),
             db_path=os.getenv("KRISHISATHI_DB_PATH", "data/krishisathi.db"),
             max_call_duration_seconds=int(os.getenv("MAX_CALL_DURATION_SECONDS", "240")),
         )
@@ -85,10 +85,8 @@ class Settings:
         missing: list[str] = []
         if not self.gnani_api_key:
             missing.append("GNANI_API_KEY")
-        if not self.google_api_key:
-            missing.append("GOOGLE_API_KEY")
-        if not self.search_api_keys():
-            missing.append("WEB_API_KEY (or GOOGLE_API_KEY)")
+        if not self.groq_api_key and not self.google_api_key:
+            missing.append("GROQ_API_KEY (or GOOGLE_API_KEY)")
 
         if missing:
             raise ValueError(
@@ -97,3 +95,4 @@ class Settings:
 
 
 settings = Settings()
+
