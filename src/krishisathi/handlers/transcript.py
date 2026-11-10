@@ -25,3 +25,4 @@ def attach_conversation_tracker(session: Any, conversation_log: list[str]) -> No
                 logger.debug("Captured [%s]: %s", role, content[:60])
         except Exception as exc:
             logger.warning("Transcript tracker skipped event: %s", exc)
+

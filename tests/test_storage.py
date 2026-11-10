@@ -44,3 +44,4 @@ def test_summary_retention_keeps_only_five_most_recent(tmp_path: Path) -> None:
     assert profile["history"][0] == "Summary 6"
     assert "Summary 0" not in profile["history"]
     assert "Summary 1" not in profile["history"]
+

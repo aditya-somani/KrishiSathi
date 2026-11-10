@@ -57,3 +57,4 @@ async def test_save_session_summary_short_call_saves_default(
     result = await summarizer.save_session_summary("+919000000001", ["user: Namaste"])
     assert "Brief call" in result
     assert repo.get_farmer("+919000000001")["history"][0] == result
+

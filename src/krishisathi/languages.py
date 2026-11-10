@@ -84,3 +84,4 @@ def to_gnani_tts_language(language: str | None) -> str:
 def to_gnani_stt_language(language: str | None) -> str:
     """Return the Gnani Prisma STT language code for a given language."""
     return resolve_language_spec(language).stt_code
+

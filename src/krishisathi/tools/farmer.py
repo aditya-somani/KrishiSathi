@@ -81,3 +81,4 @@ async def update_farmer_profile(
     if not updated:
         return "No existing profile found to update, or no new details were provided."
     return "Farmer profile details updated successfully."
+

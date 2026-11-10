@@ -23,3 +23,4 @@ def test_gnani_stt_and_tts_locale_mappings() -> None:
     assert to_gnani_tts_language("hinglish") == "auto"
     assert to_gnani_stt_language("tamil") == "ta-IN"
     assert to_gnani_tts_language("marathi") == "mr-IN"
+

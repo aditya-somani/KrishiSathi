@@ -80,3 +80,4 @@ async def save_session_summary(phone: str, conversation_log: list[str]) -> str:
         fallback = f"Call on {datetime.now().strftime('%Y-%m-%d %H:%M')}"
         repository.add_summary(phone, fallback)
         return fallback
+

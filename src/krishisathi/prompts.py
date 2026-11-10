@@ -60,3 +60,4 @@ def build_system_instructions(farmer_profile: dict[str, Any] | None) -> str:
         f"- Preferred Language: {preferred_lang}\n"
         f"- Recent Call Notes:\n- {recent_history}"
     )
+

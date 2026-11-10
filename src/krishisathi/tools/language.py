@@ -59,3 +59,4 @@ async def detect_language(
     canonical = sync_session_language(context.session, detected_language, persist=True)
     logger.info("Detected language set to %s", canonical)
     return f"Language switched to {canonical}. Continue responding in {canonical}."
+

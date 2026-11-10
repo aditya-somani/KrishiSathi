@@ -26,3 +26,4 @@ async def hangup_call(room_name: str) -> None:
         logger.error("Failed to close room %s: %s", room_name, exc)
     finally:
         await lkapi.aclose()
+

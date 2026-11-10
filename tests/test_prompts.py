@@ -31,3 +31,4 @@ def test_build_system_instructions_for_returning_farmer() -> None:
     assert "soybean, jowar" in instructions
     assert "marathi" in instructions
     assert "Asked about soybean rust" in instructions
+
